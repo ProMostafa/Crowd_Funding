@@ -1,0 +1,5 @@
+{% autoescape off %}
+hello {{ user.first_name }}
+Please click this link to active your account
+http://{{domain}}{% url 'active' uidb64=uid token=token %}
+{% endautoescape %}

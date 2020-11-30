@@ -1,0 +1,21 @@
+body{
+    height: 1000px;
+}
+.carousel-item img{
+    width: 100%;
+    height: 500px;
+}
+textarea{
+    resize: none
+}
+.media{
+    position:relative
+}
+.media .report-link{
+    position:absolute;
+    top:0;
+    right:0;
+}
+a[data-toggle="modal"]{
+    cursor:pointer
+}

@@ -1,0 +1,70 @@
+{% extends 'project/base.html' %}
+
+        {% block content %}
+
+
+            <div class="text-center mx-auto">
+                {% block notification %}  {% endblock %}
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-10">
+                {% block username %} {% endblock %}
+            </div>
+
+            <div class="col-sm-2">
+                {% block logo %} {% endblock %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3">  <!--Left Side -->
+                {% block left_side %}
+                {% endblock %}
+            </div>
+
+            <div class="col-sm-9">  <!-- Right Right -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item active">
+                        <a class="nav-link " data-toggle='tab' id="info_link" href="#information">Information</a>
+                    </li>
+                    <li class="nav-item" ><a class="nav-link" data-toggle="tab" href="#projects">Projects</a></li>
+                    <li class="nav-item" ><a class="nav-link" data-toggle="tab" href="#donations">Donations</a></li>
+                    <li class="nav-item" ><a class="nav-link" data-toggle="tab" href="#delete">Delete Account</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="information">
+                        <hr>
+                        {% block information %}
+                        {% endblock %}
+                        <hr>
+                    </div>
+
+                    <div class="tab-pane fade" id="projects">
+                        <hr>
+                        {% block projects %}
+                        {% endblock %}
+                    </div>
+
+                    <div class="tab-pane fade" id="donations">
+                        <hr>
+                        {% block donations %}
+                        {% endblock %}
+                    </div>
+
+                    <div class="tab-pane fade" id="delete">
+                        <hr>
+                        {% block delete_account %}
+                        {% endblock %}
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+    {% endblock %}

@@ -1,0 +1,484 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+
+{% block title %} My Profile {% endblock %}
+
+    {% block notification %}
+      <div id="message" class="alert {{ message.status }}" style="width: 40rem;" role="alert">
+        {{ message.message }}
+      </div>
+    {% endblock %}
+    <!-- {% block username %}
+        <h1>{{ user.first_name }} {{user.last_name}}</h1>
+    {% endblock %} -->
+
+
+
+    {% block left_side %}
+
+        <div class="text-center">
+            {% if user.avatar %}
+            <img style="width:150px !important; height:150px !important" src="{{user.avatar.url}}" class="avatar rounded-circle img-thumbnail" alt="avatar">
+
+            {% else %}
+            <img style="width:150px !important; height:150px !important" src="https://w7.pngwing.com/pngs/613/636/png-transparent-computer-icons-user-profile-male-avatar-avatar-heroes-logo-black-thumbnail.png" class="avatar rounded-circle img-thumbnail" alt="avatar">
+            {% endif %}
+            <!-- <h6>Change Photo</h6>
+             <input type="file" class="text-center center-block file-upload"> 
+            -->
+        </div>
+    </hr><br>
+      <ul class="list-group">
+        <li class="list-group-item text-muted">Activity <i class="fas fa-tachometer-alt"></i></li>
+        <li class="list-group-item text-right"><span class="float-left"><strong>Total Projects</strong></span> 125</li>
+        <li class="list-group-item text-right"><span class="float-left"><strong>Total Donations</strong></span> 1000.0 EGP</li>
+        <li class="list-group-item text-right"><span class="float-left"><strong>Last Project</strong></span> 20-11-2020</li>
+        <li class="list-group-item text-right"><span class="float-left"><strong>Last Donations</strong></span> 500 EGP</li>
+      </ul>
+
+      <div class="panel panel-default text-center mt-3">
+        <div class="panel-heading">Social Media</div>
+        <div class="panel-body mt-1">
+            <i class="fab fa-facebook fa-2x mx-1" style="color: blue;"></i>
+            <i class="fab fa-instagram fa-2x mx-1" style="color: deeppink;"></i>
+            <i class="fab fa-twitter fa-2x mx-1" style="color: blue;"></i>
+            <i class="fab fa-pinterest fa-2x mx-1" style="color: red;"></i>
+            <i class="fab fa-google-plus-g fa-2x mx-1" style="color: red;"></i>
+        </div>
+      </div>
+    {% endblock %}
+
+    {% block information %}
+
+    <form method="POST" id="{{user.id}}" action="{% url 'update_user_information' %}" novalidate>
+        {% csrf_token %}
+            <div class="row">
+              <div class="col-sm">
+
+                <div class="form-group my-2">
+                    <label class="form-control-label">Full Name:</label>
+                    <input type="text" class="form-control invalid" value="{{user.first_name}} {{user.last_name}}" disabled>
+                </div>
+
+              </div>
+
+              <div class="col-sm">
+                <div class="form-group my-2">
+                  <!-- {{ userform.email|add_label_class:"form-control-label" }}
+                  {% render_field userform.email class="form-control invalid" value=user.email  readonly=True %} -->
+                  <label class="form-control-label">Email Address:</label>
+                    <input type="text" class="form-control invalid" value="{{user.email}}" disabled>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col-sm">
+                <div class="form-group my-2">
+                  {{ userform.first_name|add_label_class:"form-control-label" }}
+                  {% render_field userform.first_name class="form-control invalid" value=user.first_name %}
+                </div>
+
+              </div>
+              <div class="col-sm">
+                <div class="form-group my-2">
+                  {{ userform.last_name|add_label_class:"form-control-label" }}
+                  {% render_field userform.last_name class="form-control invalid" value=user.last_name %}
+                </div>
+
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm">
+                <div class="form-group my-2">
+                    {{ userform.phone|add_label_class:"form-control-label" }}
+                    {% render_field userform.phone class="form-control invalid" value=user.phone %}
+                </div>
+
+              </div>
+              <div class="col-sm">
+                  <div class="form-group my-2">
+                    {{ userform.date_of_birth|add_label_class:"form-control-label" }}
+                    {% render_field userform.date_of_birth class="form-control invalid" value=user.date_of_birth %}
+                  </div>
+              </div>
+            </div>
+
+            <div class="form-group my-2">
+                {{ userform.country|add_label_class:"form-control-label" }}
+                {% render_field userform.country class="form-control invalid" value=user.country %}
+            </div>
+
+            <div class="form-group my-2">
+              {{ userform.facebook_profile|add_label_class:"form-control-label" }}
+              {% render_field userform.facebook_profile class="form-control invalid" value=user.fb_account %}
+            </div>
+
+
+
+
+        <div class="modal-footer">
+                <button type="button" class="btn btn-success mx-3 float-left " data-dismiss="modal" onclick="validation('{{user.id}}')">Update Profile </button>
+        </div>
+    </form>
+
+    {% endblock %}
+
+
+    {% block projects %}
+      {% for project in projects %}
+        <div class="card my-4" style="width:auto;">
+            <div id="carousel_{{ project.id }}" class="carousel slide" data-ride="carousel">
+              <ol class="carousel-indicators">
+                {% for img in project.projectpicture_set.all %}
+                  <li data-target="#carousel_{{ project.id }}" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %}active {% endif %}"></li>
+                {% endfor %}
+              </ol>
+              <div class="carousel-inner">
+                {% for img in project.projectpicture_set.all %}
+                  <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
+                    <img src="{{ img.image.url }}" height="100px" alt="{{ project.title }}">
+                  </div>
+                {% endfor %}
+
+              </div>
+              <a class="carousel-control-prev" href="#carousel_{{ project.id }}" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a class="carousel-control-next" href="#carousel_{{ project.id }}" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </div>
+
+            <!--   -->
+            <div class="card-body">
+                <h5 class="card-title"> Project Title:</h5>
+                <p class="ml-3">{{ project.title }}</p>
+                <h5 class="card-title">Project Details:</h5>
+                <p class="ml-3">{{ project.details }}</p>
+                <h5 class="card-title">Total Donation Target: {{project.total_target}} EGP</h5>
+                <h5 class="card-title">Donation Collected: {{project.donation_collect}} EGP</h5>
+                <span class="badge badge-success mx-2">Start Date: {{project.start_date}}</span>
+                <span class="badge badge-danger mx-2">End Date: {{project.end_date}}</span>
+                <span class="float-right mx-3">
+                  <a href="#edit_project" style="color: green;" data-toggle="modal" data-target="#edit{{project.id}}">
+                    <i class="fas fa-edit fa-lg"></i>
+                  </a>
+                </span>
+                <span class="float-right mx-3" >
+                  <a href="#delete_project" style="color: red;" data-toggle="modal" data-target="#delete{{project.id}}">
+                    <i class="fas fa-trash-alt fa-lg"></i>
+                  </a>
+                </span>
+            </div>
+        </div>
+
+        <div class="modal" id="edit{{project.id}}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title text-center">Edit Project</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <!-- Using JavaScript Validations server cant reach to this pop module ( page structure not service for using server validation form (not direct page) )-->
+                    <form method="POST" id="project{{project.id}}"  action="{% url 'update_project' project.id  %}" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        {% for hidden_field in form.hidden_fields %}
+                          {{ hidden_field }}
+                        {% endfor %}
+
+                        {% if projectform.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                              {% for error in projectform.non_field_errors %}
+                                {{ error }}
+                              {% endfor %}
+                            </div>
+                        {% endif %}
+
+
+                        <div class="form-group">
+                            {{ projectform.title.label_tag }}
+                            {% render_field projectform.title class="form-control is-valid" value=project.title %}
+                        </div>
+                        {% if projectform.title.help_text %}
+                          <small class="form-text text-muted">
+                              {{ projectform.title.help_text }}
+                          </small>
+                        {% endif %}
+
+                        <div class="form-group">
+                          {{ projectform.details.label_tag }}
+                          <!-- {% render_field projectform.details class="form-control is-valid" placeholder=project.details %}  -->
+                          <textarea name="details" class="form-control is-valid" cols="30" rows="10">
+                            {{ project.details }}
+                            </textarea>
+                      </div>
+                      {% if projectform.details.help_text %}
+                        <small class="form-text text-muted">
+                            {{ projectform.details.help_text }}
+                        </small>
+                      {% endif %}
+
+                      <div class="form-group">
+                        {{ projectform.category.label_tag }}
+                        <select name="category" class="form-control is-valid" required id="id_category" >
+                          {% for cat in category %}
+                          <option value="{{cat.id}}" {% if cat.id == project.category.id %} selected {% endif %}>{{cat.title}}</option>
+                          {% endfor %}
+                        </select>
+                       <!-- {% render_field projectform.category|remove_attr:"value selected" value=project.id class="form-control is-valid"  %} -->
+                    </div>
+
+                      <div class="form-group">
+                        {{ projectform.tags.label_tag }}
+                       {% render_field projectform.tags class="form-control" data-role="tagsinput" value=project.get_tags %} 
+                      </div>
+
+                    <div class="form-group">
+                      {{ projectform.images.label_tag }}
+                      {% render_field projectform.images class="form-control" %}
+                    </div>
+
+                    {% if projectform.category.help_text %}
+                      <small class="form-text text-muted">
+                          {{ projectform.category.help_text }}
+                      </small>
+                    {% endif %}
+
+                    <div class="form-group">
+                      {{ projectform.total_target.label_tag }}
+                      {% render_field projectform.total_target class="form-control is-valid" value=project.total_target %}
+                  </div>
+                  {% if projectform.total_target.help_text %}
+                    <small class="form-text text-muted">
+                        {{ projectform.total_target.help_text }}
+                    </small>
+                  {% endif %}
+
+                  <div class="form-group">
+                    {{ projectform.start_date.label_tag }}
+                    {% render_field projectform.start_date class="form-control is-valid" value=project.start_date %}
+                </div>
+                {% if projectform.start_date.help_text %}
+                  <small class="form-text text-muted">
+                      {{ projectform.start_date.help_text }}
+                  </small>
+                {% endif %}
+
+                <div class="form-group">
+                  {{ projectform.end_date.label_tag }}
+                  {% render_field projectform.end_date class="form-control is-valid" value=project.end_date %}
+              </div>
+              {% if projectform.end_date.help_text %}
+                <small class="form-text text-muted">
+                    {{ projectform.end_date.help_text }}
+                </small>
+              {% endif %}
+
+                        <div class="text-center my-2">
+                            <button type="button" class="btn btn-success mx-3" onclick="validation('project{{project.id}}')">Save</button>
+                            <button type="button" class="btn btn-danger mx-3" data-dismiss="modal" >Cancel</button>
+                        </div>
+
+
+                    </form>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="modal" id="delete{{project.id}}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title"><b>{{project.title}}</b></h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <h5>Are you sure you want to delete this project ?</h5>
+
+                    <form method="POST" action="{% url 'delete_project' project.id %}" novalidate>
+                        {% csrf_token %}
+                        <div class="text-center my-2">
+                            <button type="submit" class="btn btn-success mx-3">Yes</button>
+                            <button type="button" class="btn btn-danger mx-3" data-dismiss="modal" >No</button>
+                        </div>
+
+                    </form>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+
+      {% endfor %}
+
+    {% endblock %}
+
+
+
+    {% block donations %}
+
+      {% for donation in donations %}
+
+      <div class="card my-4" style="width:auto;">
+          {% if donation.get_photo %}
+        <img class="card-img-top" height="150px" src="{{ donation.get_photo.url }}" alt="Card image">
+          {% endif %}
+        <div class="card-body">
+            <h5 class="card-title"> Project Title:</h5>
+            <p class="ml-3">{{ donation.project.title }}</p>
+            <h5 class="card-title">Donation Amount: {{ donation.amount }} EGP</h5>
+            <span class="badge badge-dark mx-2">Donation Date: {{donation.created_at}}</span>
+
+            <span class="float-right mx-3">
+                <a href="#edit_project" style="color: green;" data-toggle="modal" data-target="#edit{{donation.id}}">
+                <i class="fas fa-edit fa-lg"></i>
+              </a>
+            </span>
+            <span class="float-right mx-3">
+                <a href="#delete_project" style="color: red;" data-toggle="modal" data-target="#delete{{donation.id}}">
+                    <i class="fas fa-trash-alt fa-lg"></i>
+                </a>
+            </span>
+        </div>
+    </div>
+
+
+
+
+      <div class="modal" id="edit{{donation.id}}">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title text-center">Edit Donation</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form method="POST" id="donation{{donation.id}}" action="{% url 'update_donation' donation.id %}" novalidate>
+                    {% csrf_token %}
+
+                        <div class="form-group">
+                            {{ field.label_tag  }}
+                            {% render_field donationform.amount class="form-control is-valid" value=donation.amount %}
+                        </div>
+                        {% if donationform.amount.help_text %}
+                        <small class="form-text text-muted">
+                            {{ donationform.amount.help_text }}
+                        </small>
+                        {% endif %}
+
+                    <div class="text-center my-2">
+                        <button type="button" class="btn btn-success mx-3" onclick="validation('donation{{donation.id}}')">Save</button>
+                        <button type="button" class="btn btn-danger mx-3" data-dismiss="modal" >Cancel</button>
+                    </div>
+
+                </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="modal" id="delete{{donation.id}}">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Delete Donation</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+              <h5>Are you sure you want to delete this Donation ?</h5>
+
+              <form method="POST" action="{% url 'delete_donation' donation.id %}" novalidate>
+                {% csrf_token %}
+                <div class="text-center my-2">
+                    <button type="submit" class="btn btn-success mx-3">Yes</button>
+                    <button type="button" class="btn btn-danger mx-3" data-dismiss="modal">No</button>
+                </div>
+            </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      {% endfor %}
+
+
+    {% endblock %}
+
+
+
+
+    {% block delete_account %}
+        <h3 class="text-center my-5">Are you sure you want to delete your account?</h3>
+        <div class="text-center">
+            <button type="button" class="btn btn-outline-danger btn-lg mx-3" style="width: 30rem;" data-toggle="modal" data-target="#confirm_delete_account" >Yes</button>
+        </div>
+
+
+        <div class="modal" id="confirm_delete_account">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Confirmation</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <h5>Enter Your Password</h5>
+                  
+                  <form method="POST" action="{% url 'delete_account' %}" novalidate>
+                    {% csrf_token %}
+                      <div class="form-group">
+                        <input type="password" name="password" class="form-control">
+                      </div>
+                    <div class="text-center my-2">
+                        <button type="submit" class="btn btn-danger mx-3">Delete</button>
+                        <button type="button" class="btn btn-success mx-3" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--
+            only HTTP methods that HTML form element should allow are "GET" and "POST"
+          -->
+
+    {% endblock %}
