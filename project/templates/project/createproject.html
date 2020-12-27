@@ -1,0 +1,27 @@
+{% extends 'project/base.html' %}
+
+{% block title %}
+Create New Project
+{% endblock %}
+
+{% block header %}
+{% include 'project/include/header.html' %}
+{% endblock %}
+
+
+{% block content %}
+<div class="col-12 mt-3">
+    <h2 class="alert alert-info">Create New Project</h2>
+</div>
+<div class="col-8 my-3">
+
+
+<form novalidate method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% include 'project/include/form.html' %}
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+</div>
+{% endblock %}

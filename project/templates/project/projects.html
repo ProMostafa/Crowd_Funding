@@ -1,0 +1,18 @@
+{% extends 'project/base.html' %}
+
+{% block title%}
+projects
+{% endblock %}
+{% block content %}
+<div>
+    {% for project in projects %}
+        <p>{{ project.title }}</p>
+        <p>{{ project.details }}</p>
+        <p>{{ project.start_date }}</p>
+        <p>{{ project.end_date }}</p>
+        {% if not forloop.last %}
+            <hr>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

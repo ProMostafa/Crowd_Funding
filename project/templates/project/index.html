@@ -1,0 +1,104 @@
+{% extends 'project/base.html' %}
+{% load static %}
+
+
+
+{% block header %}
+{% include 'project/include/header.html' %}
+<div id="demo" class="carousel slide" data-ride="carousel">
+  <ul class="carousel-indicators">
+    {% for _ in top_rated_projects %}
+    <li data-target="#demo" data-slide-to="{{forloop.counter0}}"  {% if not forloop.counter0 %} class="active"{% endif %}></li>
+    {% endfor %}
+  </ul>
+  <div class="carousel-inner">
+    {% for project in top_rated_projects %}
+    <div class="carousel-item {% if not forloop.counter0 %}  active {%endif%}">
+      <img src="{{ project.projectpicture_set.first.image.url }}" alt="Los Angeles">
+      <div class="carousel-caption" style="background-color:rgba(0,0,0,.5)">
+        <h3>{{project.title}}</h3>
+        <p>{{project.details}}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <a class="carousel-control-prev" href="#demo" data-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </a>
+  <a class="carousel-control-next" href="#demo" data-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="row" style="justify-content: center;">
+  <div class="col-12">
+    <h1 class="text-center p-5">latest 5 projects</h1>
+  </div>
+  {% for project in latest_projects %}
+  <div class="col-md-2  mr-3">
+    <div class="card" style="width: 12rem;">
+      {% if project.projectpicture_set.first %}
+      <img width="140" height="110" src="{{ project.projectpicture_set.first.image.url }}" class="card-img-top" alt="{{project.title}}">
+      {% else %}
+      <img width="140" height="110" src="https://via.placeholder.com/140x100" class="card-img-top" alt="{{project.title}}">
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{project.title}}</h5>
+        <p class="card-text">{{ project.details|slice:":10" }}...</p>
+        <a href="{% url 'project_detail' project.id %}" class="btn btn-primary">more</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+<div class="row" style="justify-content: center;">
+  <div class="col-12">
+    <h1 class="text-center p-5">latest 5 featured projects</h1>
+  </div>
+  {% for project in latest_featured_projects %}
+  <div class="col-md-2  mr-3">
+    <div class="card" style="width: 12rem;">
+      {% if project.projectpicture_set.first %}
+      <img width="140" height="110" src="{{ project.projectpicture_set.first.image.url }}" class="card-img-top" alt="{{project.title}}">
+      {% else %}
+      <img width="140" height="110" src="https://via.placeholder.com/140x100" class="card-img-top" alt="{{project.title}}">
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{project.title}}</h5>
+        <p class="card-text">{{ project.details|slice:":10" }}...</p>
+        <a href="{% url 'project_detail' project.id %}" class="btn btn-primary">more</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+
+{% if messages %}
+  {% for msg in messages %}
+  <div class="toast" aria-live="polite" aria-atomic="true" data-delay="10000"
+    style="position: fixed; top: 100px; right: 10px;">
+    <div class="toast-header">
+      <strong class="mr-auto text-primary">{{msg.tags}}</strong>
+      <small class="text-muted">5 mins ago</small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+    </div>
+    <div class="toast-body">
+      {{msg}}
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}
+
+<script>
+  $(document).ready(function () {
+    $('.toast').toast('show');
+  })
+</script>
+{% endblock %}

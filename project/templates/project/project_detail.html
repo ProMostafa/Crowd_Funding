@@ -1,0 +1,226 @@
+{% extends 'project/base.html' %}
+
+{% block title %}
+Project {{ project.title }}
+{% endblock %}
+
+{% block header %}
+{% include 'project/include/header.html' %}
+{% endblock %}
+
+
+{% block content %}
+<div class="col-12">
+    <h2 class="">{{ project.title }}</h2>
+    <small class="text-muted">from {{ project.start_date }} to {{ project.end_date }} by <a href="#">{{ project.user.first_name }}</a></small>
+</div>
+<div class="col-8">
+
+    {% for tag in project.tags.all %}
+    <a class="badge badge-{% cycle 'primary' 'success' %} p-2" href="{% url 'projects_by_tag' tag.id %}">{{ tag.name }}</a>
+    {% endfor %}
+
+    <p>project category <a href="#">{{ project.category.title }}</a></p>
+    <p>total target: {{ project.total_target }}</p>
+    <p>collected: {{ project_target_collected }}</p>
+    <p>average rating: {{ project.average_rating }} by {{ project.number_of_rating }} user(s)</p>
+    <div id="demo" class="carousel slide" data-ride="carousel">
+        <ul class="carousel-indicators">
+            {% for img in project.projectpicture_set.all %}
+            <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}"
+                class="{% if forloop.counter0 == 0 %}active {% endif %}"></li>
+            {% endfor %}
+        </ul>
+        <div class="carousel-inner">
+            {% for img in project.projectpicture_set.all %}
+            <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}">
+                <img src="{{ img.image.url }}" alt="{{ project.title }}">
+            </div>
+            {% endfor %}
+
+        </div>
+        <a class="carousel-control-prev" href="#demo" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#demo" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+
+    <!-- make rate -->
+    <div class="row mt-3">
+        <div class="col-4">
+            <h4>project details</h4>
+        </div>
+        {% if user.is_authenticated and project.user != user %}
+        <div class="col-6">
+            <!--just make it to handle average_rating from project to js file -->
+            <span id="average_rating"
+                  onclick="get_average_rating('{{ project.average_rating }}' , '{{ project.number_of_rating }}')"></span>
+            <div id="review" class="text-center mx-2"></div>
+
+        </div>
+        <div class="col-2 mt-2">
+            <span style="font-weight: bold;font-size: larger;">(</span>
+            <span id="rating_num_value"
+                  style="font-weight: bold;font-size: larger;">{{project.number_of_rating}}</span>
+            <span style="font-weight: bold;font-size: larger;">)</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!--   -->
+    <p>
+        {{project.details}}
+    </p>
+    <!-- Button report project -->
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+        report
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Project Report</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="project_id" value="{{project.id}}">
+                    <textarea placeholder="Write your message" id="report-message" name="report-message" cols="30"
+                              class="w-100"></textarea>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="project-report-btn" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# Commentes #}
+    <hr>
+    <h3>Comments</h3>
+    {% for comment in project.comment_set.all %}
+    <div class="media">
+        <img src="https://via.placeholder.com/65x65" class="mr-3" alt="...">
+        <div class="media-body">
+            <h5 class="mt-0"><a href="#">{{ comment.user.username }}</a></h5>
+            <small class="text-muted d-block">{{comment.created_at}}</small>
+            <p>{{ comment.body }}</p>
+            <a data-toggle="modal" data-created-by="{{ comment.user.first_name }}" data-comment="{{comment.id}}"
+               data-target="#commentReportModal" class="report-link text-danger">report</a>
+        </div>
+    </div>
+    {% endfor %}
+    <hr>
+    <div class="media mt-3">
+        <div class="media-body">
+            <form method="post" action="{% url 'post_comment' project.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="/project/{{project.id}}">
+                <textarea name="comment-body" id="comment-body" class="w-100" rows="5"></textarea>
+                <button type="submit" class="btn btn-primary">comment</button>
+            </form>
+        </div>
+    </div>
+    <!--  comment report modal  -->
+    <div class="modal fade" id="commentReportModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mr-1" id="commentReportLabel">Comment Report</h5>
+                    <small style="align-self: flex-end;" class="created-by text-muted d-block"></small>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <textarea placeholder="Write your message" id="commentReportMessage" name="report-message" cols="30"
+                              class="w-100"></textarea>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="commentReportBtn" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="col-4">
+    {% ifnotequal project.user user %}
+    <div>
+        <h3>Fund for this project</h3>
+        <form class="form" method="post" action="{% url 'project_fund' project.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <input class="form-control" placeholder="amount" type="number" step="0.01" name="amount">
+            </div>
+            <input type="submit" value="submit" class="btn btn-success btn-block"/>
+        </form>
+    </div>
+    {% endifnotequal %}
+</div>
+
+<div class="col-12">
+    <div class="row mt-3">
+        <div class="col-12">
+            <h3>Related Projects</h3>
+        </div>
+        {% for project in realted_projects %}
+        <div class="col-md-2  mr-3">
+            <div class="card" style="width: 12rem;">
+                {% if project.projectpicture_set.first %}
+                <img width="140" height="110" src="{{ project.projectpicture_set.first.image.url }}"
+                     class="card-img-top" alt="{{project.title}}">
+                {% else %}
+                <img width="140" height="110" src="https://via.placeholder.com/140x100" class="card-img-top"
+                     alt="{{project.title}}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{project.title}}</h5>
+                    <p class="card-text">{{ project.details|slice:":10" }}...</p>
+                    <a href="{% url 'project_detail' project.id %}" class="btn btn-primary">more</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info col-12 text-center">
+            <p>There are no related projects</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div id="report-toast" class="toast" aria-live="polite" aria-atomic="true" data-delay="10000"
+     style="position: fixed; top: 100px; right: 10px;">
+    <div class="toast-header">
+        <strong class="mr-auto text-primary">Success</strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+    </div>
+    <div class="toast-body">
+        report has been submitted, thanks for telling us
+    </div>
+</div>
+
+{% if messages %}
+{% for msg in messages %}
+<div class="toast" aria-live="polite" aria-atomic="true" data-delay="10000"
+     style="position: fixed; top: 100px; right: 10px;">
+    <div class="toast-header">
+        <strong class="mr-auto text-primary">{{msg.tags}}</strong>
+        <small class="text-muted">5 mins ago</small>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+    </div>
+    <div class="toast-body">
+        {{msg}}
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}
