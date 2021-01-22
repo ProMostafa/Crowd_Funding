@@ -18,3 +18,12 @@ Crowd-Funding-Web-app$ python3 manage.py makemigrations
 Crowd-Funding-Web-app$ python3 manage.py migrate
 Crowd-Funding-Web-app$ python3 manage.py runserver
 ```
+### Snippest from Project
+![][1] \
+![][2] \
+![][3]
+
+
+[1]: 
+[2]: 
+[3]: 
