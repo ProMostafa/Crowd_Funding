@@ -20,9 +20,9 @@ Crowd-Funding-Web-app$ python3 manage.py runserver
 ```
 ### Project Features:
 1. Authentication System:
-  1. Custiomize user model
-  2. Registration
-  3. Activation Email after registration
+ 1. Custiomize user model
+ 2. Registration
+ 3. Activation Email after registration
 2. CRUD operations:
  1. user profile
  2. project details
