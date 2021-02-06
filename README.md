@@ -20,17 +20,17 @@ Crowd-Funding-Web-app$ python3 manage.py runserver
 ```
 ### Project Features:
 1. Authentication System:
-  2. Custiomize user model
+  1. Custiomize user model
   2. Registration
-  2. Activation Email after registration
-1. CRUD operations:
- 2. user profile
+  3. Activation Email after registration
+2. CRUD operations:
+ 1. user profile
  2. project details
-1. home page:
- 2. highest five rated projects
+3. home page:
+ 1. highest five rated projects
  2. List of the latest 5 projects
- 2. List of latest 5 featured projects (which are selected by the admin)
-1. using Ajax request in some case
+ 3. List of latest 5 featured projects (which are selected by the admin)
+4. using Ajax request in some case
 ### Snippest from Project
 ![][1] \
 ![][2] \
