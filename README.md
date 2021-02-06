@@ -19,19 +19,6 @@ Crowd-Funding-Web-app$ python3 manage.py migrate
 Crowd-Funding-Web-app$ python3 manage.py runserver
 ```
 ### Project Features:
-1. Authentication System:
- 1. Custiomize user model
- 2. Registration
- 3. Activation Email after registration
-2. CRUD operations:
- 1. user profile
- 2. project details
-3. home page:
- 1. highest five rated projects
- 2. List of the latest 5 projects
- 3. List of latest 5 featured projects (which are selected by the admin)
-4. using Ajax request in some case
-
 1. Item 1  
 1. Item 2  
   2. Item 2.1
