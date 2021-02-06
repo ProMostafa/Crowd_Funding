@@ -19,10 +19,12 @@ Crowd-Funding-Web-app$ python3 manage.py migrate
 Crowd-Funding-Web-app$ python3 manage.py runserver
 ```
 ### Project Features:
-1. Item 1  
-1. Item 2  
-  2. Item 2.1
-  2. Item 2.2
+1. First item
+2. Second item
+3. Third item
+    1. Indented item
+    2. Indented item
+4. Fourth item 
 ### Snippest from Project
 ![][1] \
 ![][2] \
